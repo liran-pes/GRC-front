@@ -83,6 +83,7 @@
     <li><button class="nav-item" data-screen="controls"><svg><use href="#i-shield-check"/></svg>בקרות</button></li>
     <li><button class="nav-item" data-screen="compliance"><svg><use href="#i-file-check"/></svg>ציות</button></li>
     <li><button class="nav-item" data-screen="reports"><svg><use href="#i-chart"/></svg>דוחות</button></li>
+    <li><button class="nav-item" data-screen="messages"><svg><use href="#i-bell"/></svg>הודעות</button></li>
     <li><button class="nav-item" data-screen="admin"><svg><use href="#i-gear"/></svg>ניהול<svg class="chev"><use href="#i-chev-down"/></svg></button></li>
   </ul>
 </nav>
@@ -162,6 +163,41 @@
       <button class="panel-link">לכל הפרויקטים <svg width="17" height="17"><use href="#i-arrow-left"/></svg></button>
     </div>
   </div>
+
+  <div class="panel messages-teaser" data-go-screen="messages" role="button" tabindex="0" aria-label="פתיחת דף הודעות">
+    <div class="panel-head">
+      <h2><svg><use href="#i-bell"/></svg>הודעות אחרונות</h2>
+      <span class="pill pill-green"><span class="dot"></span>5 חדשות</span>
+    </div>
+    <ul class="notification-list compact">
+      <li class="message-item unread" data-message-title="3 פרויקטים ממתינים לאישור ועדת ארכיטקטורה">
+        <span class="message-dot"></span>
+        <div class="message-main">
+          <strong>3 פרויקטים ממתינים לאישור ועדת ארכיטקטורה</strong>
+          <span>הטמעת ISO 27001, מעבר לענן פרטי ושדרוג מערכת פיננסית.</span>
+        </div>
+        <time>לפני 12 דק׳</time>
+      </li>
+      <li class="message-item unread" data-message-title="2 בקרות חסרות ראיות עדכניות">
+        <span class="message-dot"></span>
+        <div class="message-main">
+          <strong>2 בקרות חסרות ראיות עדכניות</strong>
+          <span>נדרשת השלמת צילום מסך IAM ולוג ביקורת אחרון.</span>
+        </div>
+        <time>לפני שעה</time>
+      </li>
+      <li class="message-item" data-message-title="חריגת SLA בפרויקט BI ארגוני">
+        <span class="message-dot"></span>
+        <div class="message-main">
+          <strong>חריגת SLA בפרויקט BI ארגוני</strong>
+          <span>הפרויקט חרג ב־4 ימים וממתין לסגירת פערי ציות.</span>
+        </div>
+        <time>אתמול</time>
+      </li>
+    </ul>
+    <button class="panel-link open-all-notifications" data-go-screen="messages">פתח את כל ההתראות <svg width="17" height="17"><use href="#i-arrow-left"/></svg></button>
+  </div>
+
 </section>
 
 <!-- ================= פרויקטים ================= -->
@@ -632,6 +668,108 @@
           <text x="436" y="290">אפר' 2025</text><text x="568" y="290">מאי 2025</text><text x="700" y="290">יוני 2025</text>
         </g>
       </svg>
+    </div>
+  </div>
+</section>
+
+
+<!-- ================= הודעות ================= -->
+<section class="screen" id="screen-messages">
+  <div class="page-head">
+    <div class="page-title">
+      <h1>הודעות והתראות</h1>
+      <p>מרכז הודעות מוקאפ: התראות מערכת, משימות להמשך טיפול, בקשות אישור ועדכוני SLA.</p>
+    </div>
+    <span class="pill pill-green"><span class="dot"></span>5 הודעות חדשות</span>
+  </div>
+
+  <div class="kpi-row messages-kpis">
+    <div class="kpi-card" data-message-filter="unread">
+      <div><div class="kpi-label">הודעות חדשות</div><div class="kpi-value">5</div></div>
+      <div class="kpi-icon tint-green"><svg><use href="#i-bell"/></svg></div>
+    </div>
+    <div class="kpi-card" data-message-filter="approval">
+      <div><div class="kpi-label">ממתין לאישור</div><div class="kpi-value">3</div></div>
+      <div class="kpi-icon tint-orange"><svg><use href="#i-clock"/></svg></div>
+    </div>
+    <div class="kpi-card" data-message-filter="evidence">
+      <div><div class="kpi-label">חסר ראיות</div><div class="kpi-value">2</div></div>
+      <div class="kpi-icon tint-purple"><svg><use href="#i-file-check"/></svg></div>
+    </div>
+    <div class="kpi-card" data-message-filter="sla">
+      <div><div class="kpi-label">חריגות SLA</div><div class="kpi-value">1</div></div>
+      <div class="kpi-icon ring-red"><svg><use href="#i-alert"/></svg></div>
+    </div>
+  </div>
+
+  <div class="two-col wide-start messages-layout">
+    <div class="panel">
+      <div class="panel-head">
+        <h2><svg><use href="#i-bell"/></svg>כל ההתראות</h2>
+        <button class="btn-outline" data-message-action="mark-all-read"><svg width="16" height="16"><use href="#i-shield-check"/></svg> סמן הכל כנקרא</button>
+      </div>
+      <ul class="notification-list">
+        <li class="message-item unread priority-high" data-message-type="approval" data-message-title="3 פרויקטים ממתינים לאישור ועדת ארכיטקטורה">
+          <span class="message-dot"></span>
+          <div class="message-main">
+            <div class="message-headline"><strong>3 פרויקטים ממתינים לאישור ועדת ארכיטקטורה</strong><span class="status st-orange"><span class="dot"></span>דחוף</span></div>
+            <span>הטמעת ISO 27001, מעבר לענן פרטי ושדרוג מערכת פיננסית ממתינים לשיבוץ ועדה.</span>
+            <div class="message-meta"><span>ערוץ: פרויקטים</span><span>אחראי: יונתן כהן</span><span>לפני 12 דק׳</span></div>
+          </div>
+          <button class="message-action" data-message-action="open-projects">פתח</button>
+        </li>
+        <li class="message-item unread" data-message-type="evidence" data-message-title="2 בקרות חסרות ראיות עדכניות">
+          <span class="message-dot"></span>
+          <div class="message-main">
+            <div class="message-headline"><strong>2 בקרות חסרות ראיות עדכניות</strong><span class="status st-blue"><span class="dot"></span>לטיפול</span></div>
+            <span>חסרות ראיות עבור בקרת הרשאות ובקרת ניטור לוגים.</span>
+            <div class="message-meta"><span>ערוץ: בקרות</span><span>אחראית: מירב לוי</span><span>לפני שעה</span></div>
+          </div>
+          <button class="message-action" data-message-action="open-controls">פתח</button>
+        </li>
+        <li class="message-item unread priority-high" data-message-type="sla" data-message-title="חריגת SLA בפרויקט BI ארגוני">
+          <span class="message-dot"></span>
+          <div class="message-main">
+            <div class="message-headline"><strong>חריגת SLA בפרויקט BI ארגוני</strong><span class="status st-red"><span class="dot"></span>SLA</span></div>
+            <span>הפרויקט חרג ב־4 ימים וממתין לסגירת פערי ציות ותיעוד החלטה.</span>
+            <div class="message-meta"><span>ערוץ: דוחות</span><span>אחראי: דניאל לוי</span><span>אתמול</span></div>
+          </div>
+          <button class="message-action" data-message-action="open-reports">פתח</button>
+        </li>
+        <li class="message-item" data-message-type="compliance" data-message-title="עודכן סטטוס ציות רבעוני">
+          <span class="message-dot"></span>
+          <div class="message-main">
+            <div class="message-headline"><strong>עודכן סטטוס ציות רבעוני</strong><span class="status st-green"><span class="dot"></span>מידע</span></div>
+            <span>עמידה בציות עלתה ל־87% לאחר סגירת שלושה פערים.</span>
+            <div class="message-meta"><span>ערוץ: ציות</span><span>מערכת</span><span>לפני יומיים</span></div>
+          </div>
+          <button class="message-action" data-message-action="open-compliance">פתח</button>
+        </li>
+        <li class="message-item" data-message-type="admin" data-message-title="נוצר משתמש חדש במערכת">
+          <span class="message-dot"></span>
+          <div class="message-main">
+            <div class="message-headline"><strong>נוצר משתמש חדש במערכת</strong><span class="status st-blue"><span class="dot"></span>ניהול</span></div>
+            <span>נועה ישראלי נוספה לתפקיד סוקר רגולציה בסביבת הדמו.</span>
+            <div class="message-meta"><span>ערוץ: ניהול</span><span>מנהל מערכת</span><span>לפני שבוע</span></div>
+          </div>
+          <button class="message-action" data-message-action="open-admin">פתח</button>
+        </li>
+      </ul>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><h2><svg><use href="#i-clock"/></svg>פעולות מהירות</h2></div>
+      <div class="quick-actions">
+        <button data-message-action="mark-all-read"><svg><use href="#i-shield-check"/></svg><span>סמן הכל כנקרא</span></button>
+        <button data-message-action="export-notifications"><svg><use href="#i-download"/></svg><span>ייצא התראות</span></button>
+        <button data-message-action="open-projects"><svg><use href="#i-briefcase"/></svg><span>פתח פרויקטים לאישור</span></button>
+        <button data-message-action="open-controls"><svg><use href="#i-shield-check"/></svg><span>פתח בקרות חסרות ראיות</span></button>
+      </div>
+
+      <div class="message-side-note">
+        <h3>כללי מוקאפ</h3>
+        <p>בדף אמיתי כאן יוצגו התראות לפי הרשאות המשתמש, עדיפות, SLA, שיוך לוועדה והקשר לפרויקט או בקרה.</p>
+      </div>
     </div>
   </div>
 </section>
