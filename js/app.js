@@ -14,6 +14,12 @@
     'סיכונים': 'risks',
     'בקרות': 'controls',
     'ציות': 'compliance',
+    'תקנים': 'standards',
+    'תקן': 'standards',
+    'דרישות': 'requirements',
+    'כרטיסי': 'requirements',
+    'כרטיסי דרישה': 'requirements',
+    'IT 3.1': 'requirements',
     'דוחות': 'reports',
     'הודעות': 'messages',
     'התראות': 'messages',
@@ -167,6 +173,28 @@
         return;
       }
 
+      var standardAction = target.closest('[data-standard-action]');
+      if (standardAction) {
+        event.preventDefault();
+        event.stopPropagation();
+        handleStandardAction(standardAction.dataset.standardAction, standardAction);
+        return;
+      }
+
+      var requirementAction = target.closest('[data-requirement-action]');
+      if (requirementAction) {
+        event.preventDefault();
+        event.stopPropagation();
+        handleRequirementAction(requirementAction.dataset.requirementAction, requirementAction);
+        return;
+      }
+
+      var requirementCard = target.closest('.requirement-card');
+      if (requirementCard) {
+        openRequirementDetail(requirementCard);
+        return;
+      }
+
       var messageItem = target.closest('.message-item');
       if (messageItem && activeScreenId() === 'messages') {
         openMessageDetail(messageItem);
@@ -273,7 +301,7 @@
   }
 
   function enrichClickableElements() {
-    qsa('.kpi-card, .feature-card, .task-item, .gap-item, .message-item, .messages-teaser, table.data tbody tr, .link-blue, .bar-col, .chart-legend span, .line-chart-svg').forEach(function (el) {
+    qsa('.kpi-card, .feature-card, .task-item, .gap-item, .message-item, .messages-teaser, .requirement-card, table.data tbody tr, .link-blue, .bar-col, .chart-legend span, .line-chart-svg').forEach(function (el) {
       el.classList.add('mock-clickable');
       if (!el.hasAttribute('tabindex')) el.setAttribute('tabindex', '0');
     });
@@ -346,6 +374,19 @@
 
     if (current === 'reports') {
       openReportPreview(title);
+      return;
+    }
+
+    if (current === 'standards') {
+      openStandardOverview(title);
+      return;
+    }
+
+    if (current === 'requirements') {
+      openModal(title, '<p>סינון כרטיסי דרישה לפי פרק התקן שנבחר. במערכת אמיתית יוצגו כל הכרטיסים, סעיפי המשנה, ראיות ומדדי עמידה.</p>' + mockTimelineHtml(), [
+        { label: 'הפעל סינון', action: 'filter-requirements', primary: true },
+        { label: 'ייצוא כרטיסים', action: 'export-current' }
+      ]);
       return;
     }
 
@@ -585,6 +626,212 @@
       ]);
   }
 
+
+  function handleStandardAction(action, button) {
+    var row = button.closest('tr');
+    if (action === 'add') return openStandardForm();
+    if (action === 'export') return downloadMockReport('מאגר תקנים');
+    if (action === 'open-requirements') return navigateTo('requirements', 'נפתחו כרטיסי הדרישה של תקן IT 3.1');
+    if (action.indexOf('filter-') === 0) return filterStandards(action.replace('filter-', ''));
+    if (action === 'view' && row) return openStandardDetail(row);
+    if (action === 'publish' && row) return publishStandard(row);
+    if (action === 'edit-draft' && row) return editDraftStandard(row);
+    if (action === 'retire' && row) return retireStandard(row);
+    if (action === 'new-version' && row) return openNewVersion(row);
+    if (action === 'clone' && row) return cloneRetiredStandard(row);
+    return showToast('פעולת תקן בוצעה במוקאפ');
+  }
+
+  function handleRequirementAction(action, button) {
+    if (action === 'add') return openRequirementForm();
+    if (action === 'export') return downloadMockReport('כרטיסי דרישה תקן IT 3.1');
+    if (action === 'traceability') return openTraceabilityModal();
+    if (action.indexOf('filter-') === 0) return filterRequirements(action.replace('filter-', ''));
+    return showToast('פעולת כרטיס דרישה בוצעה במוקאפ');
+  }
+
+  function openStandardForm() {
+    openModal('תקן חדש', '' +
+      '<form class="mock-form" id="mock-standard-form">' +
+        '<label>שם התקן<input name="standardName" value="תקן חדש לניהול מידע"></label>' +
+        '<label>גרסה<input name="standardVersion" value="0.1"></label>' +
+        '<label>בעלים<input name="standardOwner" value="ענף רגולציה"></label>' +
+        '<label>סטטוס<select name="standardStatus"><option>טיוטה</option><option>ממתין לפרסום</option></select></label>' +
+        '<label>תיאור<textarea name="standardDesc">תקן מוקאפ חדש שנוצר מתוך מסך ניהול תקנים.</textarea></label>' +
+      '</form>', [
+        { label: 'שמירת תקן', action: 'save-standard', primary: true },
+        { label: 'ביטול', action: 'close' }
+      ]);
+  }
+
+  function saveMockStandard() {
+    var form = qs('#mock-standard-form');
+    if (!form) return showToast('התקן נשמר במוקאפ');
+    var data = new FormData(form);
+    var tbody = qs('#standards-table tbody');
+    if (tbody) {
+      var status = data.get('standardStatus') || 'טיוטה';
+      var state = status.indexOf('פרסום') > -1 ? 'review' : 'draft';
+      var statusClass = state === 'review' ? 'st-orange' : 'st-blue';
+      var tr = document.createElement('tr');
+      tr.dataset.standardState = state;
+      tr.innerHTML = '' +
+        '<td><span class="cell-title">' + escapeHtml(data.get('standardName') || 'תקן חדש') + '</span><span class="row-note">' + escapeHtml(data.get('standardDesc') || 'תקן מוקאפ חדש') + '</span></td>' +
+        '<td>' + escapeHtml(data.get('standardVersion') || '0.1') + '</td>' +
+        '<td>' + escapeHtml(data.get('standardOwner') || 'ענף רגולציה') + '</td>' +
+        '<td><span class="status ' + statusClass + ' standard-status"><span class="dot"></span>' + escapeHtml(status) + '</span></td>' +
+        '<td>היום</td><td>0</td>' +
+        '<td><span class="action-icons standard-actions"><button title="עדכון טיוטה" data-standard-action="edit-draft"><svg><use href="#i-file-text"/></svg></button><button title="פרסם" data-standard-action="publish"><svg><use href="#i-shield-check"/></svg></button><button title="העבר ללא בתוקף" data-standard-action="retire"><svg><use href="#i-alert"/></svg></button></span></td>';
+      tbody.prepend(tr);
+      tr.classList.add('mock-new-row', 'mock-clickable');
+    }
+    closeModal();
+    showToast('התקן נוסף למאגר התקנים במוקאפ');
+  }
+
+  function filterStandards(state) {
+    var labels = { published: 'תקנים בתוקף', draft: 'טיוטות', review: 'ממתינים לפרסום', retired: 'לא בתוקף' };
+    qsa('#standards-table tbody tr').forEach(function (row) {
+      row.classList.toggle('mock-hidden-by-standard-filter', row.dataset.standardState !== state);
+    });
+    showToast('סינון תקנים: ' + (labels[state] || state));
+  }
+
+  function setStandardStatus(row, state, text, cls) {
+    row.dataset.standardState = state;
+    var status = qs('.standard-status', row);
+    if (status) status.className = 'status ' + cls + ' standard-status';
+    if (status) status.innerHTML = '<span class="dot"></span>' + text;
+  }
+
+  function publishStandard(row) {
+    if (row.dataset.standardState === 'retired') return showToast('תקן לא בתוקף לא ניתן לפרסום ישיר — יש לשכפל כטיוטה');
+    setStandardStatus(row, 'published', 'פורסם', 'st-green');
+    var dateCell = row.cells[4];
+    if (dateCell) dateCell.textContent = 'היום';
+    showToast('התקן פורסם במוקאפ והגרסה הוקפאה');
+  }
+
+  function editDraftStandard(row) {
+    if (row.dataset.standardState === 'published') {
+      return showToast('תקן שפורסם לא מתעדכן ישירות — נוצרה גרסה חדשה לעריכה');
+    }
+    if (row.dataset.standardState === 'retired') return showToast('תקן לא בתוקף הוא לצפייה בלבד');
+    var title = cleanText(qs('.cell-title', row));
+    openModal('עדכון תקן שלא פורסם — ' + title, '' +
+      '<form class="mock-form"><label>שם התקן<input value="' + escapeHtml(title) + '"></label><label>גרסה<input value="' + escapeHtml(cleanText(row.cells[1])) + '"></label><label>הערת שינוי<textarea>עודכן ניסוח סעיף, בעלים וכרטיסי דרישה.</textarea></label></form>', [
+        { label: 'שמירת טיוטה', action: 'save-settings', primary: true },
+        { label: 'שלח לפרסום', action: 'confirm-action' }
+      ]);
+  }
+
+  function retireStandard(row) {
+    var title = cleanText(qs('.cell-title', row));
+    setStandardStatus(row, 'retired', 'לא בתוקף', 'st-red');
+    showToast(title + ' הועבר לסטטוס לא בתוקף במוקאפ');
+  }
+
+  function openNewVersion(row) {
+    var title = cleanText(qs('.cell-title', row));
+    openModal('יצירת גרסה חדשה — ' + title, '' +
+      '<p>נוצרה טיוטה חדשה על בסיס התקן שפורסם. הגרסה הקודמת נשארת בתוקף עד פרסום הגרסה החדשה.</p>' +
+      '<div class="mock-summary-grid"><div><span>גרסה קיימת</span><strong>' + escapeHtml(cleanText(row.cells[1])) + '</strong></div><div><span>גרסת טיוטה</span><strong>3.2-draft</strong></div><div><span>סטטוס</span><strong>טיוטה לעריכה</strong></div></div>', [
+        { label: 'פתח טיוטה חדשה', action: 'confirm-action', primary: true },
+        { label: 'ייצוא השוואת גרסאות', action: 'export-current' }
+      ]);
+  }
+
+  function cloneRetiredStandard(row) {
+    setStandardStatus(row, 'draft', 'טיוטה', 'st-blue');
+    showToast('התקן שוכפל כטיוטה חדשה במוקאפ');
+  }
+
+  function openStandardDetail(row) {
+    var title = cleanText(qs('.cell-title', row));
+    openModal(title, '' +
+      '<div class="mock-summary-grid"><div><span>גרסה</span><strong>' + escapeHtml(cleanText(row.cells[1])) + '</strong></div><div><span>בעלים</span><strong>' + escapeHtml(cleanText(row.cells[2])) + '</strong></div><div><span>סטטוס</span><strong>' + escapeHtml(cleanText(row.cells[3])) + '</strong></div><div><span>כרטיסי דרישה</span><strong>' + escapeHtml(cleanText(row.cells[5])) + '</strong></div></div>' +
+      '<h3>פרקים לדוגמה בתקן IT 3.1</h3><div class="mock-flow"><span>7.1 שירותי מידע</span><span>7.6 סייבר</span><span>7.10 ניטור</span><span>7.12 בדיקתיות</span><span>7.16 AI</span></div>' + mockTimelineHtml(), [
+        { label: 'פתח כרטיסי דרישה', action: 'filter-requirements', primary: true },
+        { label: 'ייצוא תקן', action: 'export-current' }
+      ]);
+  }
+
+  function openStandardOverview(title) {
+    openModal(title, '<p>Drill Down לניהול תקנים: גרסאות, בעלים, כרטיסי דרישה, פרסום, עקיבות והיסטוריית החלטות.</p>' + mockTimelineHtml(), [
+      { label: 'תקן חדש', action: 'save-settings', primary: true },
+      { label: 'ייצוא מאגר', action: 'export-current' }
+    ]);
+  }
+
+  function openRequirementForm() {
+    openModal('כרטיס דרישה חדש', '' +
+      '<form class="mock-form" id="mock-requirement-form">' +
+        '<label>מזהה כרטיס<input name="reqId" value="AI-RQ-099"></label>' +
+        '<label>פרק בתקן<select name="reqClause"><option>7.16 שילוב מודלי AI</option><option>7.6 הגנה בסייבר</option><option>7.12 בדיקתיות</option><option>7.11 תחקור ומיצוי מידע</option></select></label>' +
+        '<label>כותרת<input name="reqTitle" value="בקרת Drift למודל AI"></label>' +
+        '<label>אחראי<input name="reqOwner" value="ר״ת מידע ו־AI"></label>' +
+        '<label>דרישה<textarea name="reqBody">נדרש לנטר שינוי בהתנהגות המודל, להגדיר סף התרעה ולהפעיל בקרה אנושית.</textarea></label>' +
+      '</form>', [
+        { label: 'שמירת כרטיס', action: 'save-requirement', primary: true },
+        { label: 'ביטול', action: 'close' }
+      ]);
+  }
+
+  function saveMockRequirement() {
+    var form = qs('#mock-requirement-form');
+    if (!form) return showToast('כרטיס הדרישה נשמר במוקאפ');
+    var data = new FormData(form);
+    var grid = qs('#requirements-grid');
+    if (grid) {
+      var clauseText = data.get('reqClause') || '7.16 שילוב מודלי AI';
+      var clause = clauseText.split(' ')[0];
+      var article = document.createElement('article');
+      article.className = 'requirement-card mock-new-row mock-clickable';
+      article.dataset.clause = clause;
+      article.dataset.owner = data.get('reqOwner') || 'ר״ת מידע ו־AI';
+      article.dataset.evidence = 'תיעוד דרישה, תוצאות בדיקה, החלטת סוקר';
+      article.dataset.requirementTitle = (data.get('reqId') || 'RQ-NEW') + ' — ' + (data.get('reqTitle') || 'כרטיס חדש');
+      article.innerHTML = '<div class="req-head"><span class="req-id">' + escapeHtml(data.get('reqId') || 'RQ-NEW') + '</span><span class="status st-blue"><span class="dot"></span>חדש</span></div><h3>' + escapeHtml(data.get('reqTitle') || 'כרטיס דרישה חדש') + '</h3><p>' + escapeHtml(data.get('reqBody') || 'דרישת מוקאפ חדשה') + '</p><div class="req-map"><span>תקן IT 3.1</span><span>פרק ' + escapeHtml(clause) + '</span><span>סעיף נבחר: חדש</span></div>';
+      grid.prepend(article);
+    }
+    closeModal();
+    showToast('כרטיס הדרישה נוסף למאגר במוקאפ');
+  }
+
+  function filterRequirements(kind) {
+    var map = { ai: '7.16', cyber: '7.6', test: '7.12' };
+    var clause = map[kind];
+    qsa('#requirements-grid .requirement-card').forEach(function (card) {
+      card.classList.toggle('mock-hidden-by-requirement-filter', clause && card.dataset.clause !== clause);
+    });
+    showToast('סינון כרטיסי דרישה לפי פרק ' + (clause || 'כללי'));
+  }
+
+  function openRequirementDetail(card) {
+    var title = card.dataset.requirementTitle || cleanText(qs('h3', card));
+    var clause = card.dataset.clause || '7.x';
+    var owner = card.dataset.owner || 'בעלים מקצועי';
+    var evidence = card.dataset.evidence || 'ראיות דמו';
+    openModal(title, '' +
+      '<div class="mock-summary-grid"><div><span>תקן</span><strong>IT 3.1</strong></div><div><span>פרק</span><strong>' + escapeHtml(clause) + '</strong></div><div><span>אחראי</span><strong>' + escapeHtml(owner) + '</strong></div><div><span>סטטוס</span><strong>' + escapeHtml(cleanText(qs('.status', card)) || 'פתוח') + '</strong></div></div>' +
+      '<h3>מה בודקים?</h3><p>' + escapeHtml(cleanText(qs('p', card))) + '</p>' +
+      '<h3>ראיות נדרשות</h3><p>' + escapeHtml(evidence) + '</p>' +
+      '<div class="mock-flow"><span>דרישה</span><span>מענה לקוח</span><span>ראיה</span><span>סקירה</span><span>החלטת ועדה</span></div>', [
+        { label: 'פתח תיק עמידה', action: 'open-record', primary: true },
+        { label: 'הוסף ראיה', action: 'add-evidence' },
+        { label: 'ייצא כרטיס', action: 'export-current' }
+      ]);
+  }
+
+  function openTraceabilityModal() {
+    openModal('עקיבות דרישה ← פרויקט ← ראיה', '' +
+      '<div class="mock-flow"><span>AI-RQ-001</span><span>פרויקט מודל תומך החלטה</span><span>שאלון לקוח</span><span>ראיית HITL</span><span>החלטת ועדת מידע</span></div>' +
+      '<ul class="mock-alert-list"><li><strong>דרישה</strong><span>אישור שילוב מודל AI — פרק 7.16</span></li><li><strong>פרויקט</strong><span>מערכת אנליטיקה מבצעית — ממתין לוועדת מידע</span></li><li><strong>ראיה</strong><span>מסמך תפקיד המודל, לוג בדיקות וחתימת ארכיטקט AI</span></li></ul>', [
+        { label: 'ייצוא עקיבות', action: 'export-current', primary: true },
+        { label: 'פתיחת פרויקט', action: 'filter-projects' }
+      ]);
+  }
+
   function handleMessageAction(action, button) {
     if (action === 'mark-all-read') {
       markAllMessagesRead();
@@ -635,12 +882,15 @@
   function handleModalAction(action, button) {
     if (action === 'close') return closeModal();
     if (action === 'save-user') return saveMockUser();
+    if (action === 'save-standard') return saveMockStandard();
+    if (action === 'save-requirement') return saveMockRequirement();
     if (action === 'download-report') return downloadMockReport(qs('#mock-modal-title').textContent || 'דוח מוקאפ');
     if (action === 'export-current' || action === 'download-evidence') return downloadMockReport('ייצוא מוקאפ');
     if (action === 'filter-projects') return navigateTo('projects', 'נפתח סינון פרויקטים');
     if (action === 'filter-controls') return navigateTo('controls', 'נפתח סינון בקרות');
     if (action === 'open-alerts') return navigateTo('messages', 'נפתח דף ההודעות וההתראות');
     if (action === 'admin-open') return navigateTo('admin', 'נפתח מסך ניהול');
+    if (action === 'filter-requirements') return navigateTo('requirements', 'נפתח דף כרטיסי הדרישה');
     if (action === 'view-file') return showToast('קובץ מוקאפ נפתח לתצוגה');
     if (action === 'mark-read') {
       markAllMessagesRead();
@@ -684,7 +934,7 @@
     if (!query) return;
     var active = qs('.screen.active');
     if (!active) return;
-    var targets = qsa('table.data tbody tr, .task-item, .gap-item, .feature-card, .kpi-card', active);
+    var targets = qsa('table.data tbody tr, .task-item, .gap-item, .feature-card, .kpi-card, .requirement-card', active);
     var lower = query.toLowerCase();
     var found = 0;
     targets.forEach(function (el) {
@@ -711,7 +961,7 @@
       { label: 'סגירה', action: 'close', primary: true }
     ]);
     var active = qs('.screen.active');
-    var matches = qsa('table.data tbody tr, .task-item, .gap-item, .feature-card, .kpi-card', active).filter(function (el) {
+    var matches = qsa('table.data tbody tr, .task-item, .gap-item, .feature-card, .kpi-card, .requirement-card', active).filter(function (el) {
       return cleanText(el).toLowerCase().indexOf(query.toLowerCase()) > -1;
     });
     var items = matches.slice(0, 8).map(function (el) {
@@ -847,7 +1097,9 @@
       'profile': 'פרופיל משתמש נפתח',
       'preferences': 'העדפות תצוגה נפתחו',
       'permissions': 'מסך הרשאות נפתח',
-      'logout': 'יציאה דמו בוצעה'
+      'logout': 'יציאה דמו בוצעה',
+      'open-record': 'נפתח תיק עמידה',
+      'filter-requirements': 'נפתח סינון כרטיסי דרישה'
     };
     return labels[action] || cleanText(button) || 'פעולת מוקאפ';
   }
