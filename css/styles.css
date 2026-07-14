@@ -1323,3 +1323,111 @@ body.mock-modal-open { overflow: hidden; }
   .message-action { grid-column: 2; justify-self: start; }
   .message-headline { align-items: flex-start; flex-direction: column; }
 }
+
+
+/* ================= Standards / Requirement cards ================= */
+.page-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+.row-note {
+  display: block;
+  color: var(--muted);
+  font-size: .82rem;
+  margin-top: 4px;
+  line-height: 1.45;
+}
+.standard-actions button[title="העבר ללא בתוקף"] { color: #b84a4a; }
+.standards-layout { align-items: start; }
+.standard-lifecycle {
+  display: grid;
+  gap: 12px;
+}
+.lifecycle-step {
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 15px 16px;
+  background: #fff;
+}
+.lifecycle-step strong { display: block; color: var(--navy); margin-bottom: 4px; }
+.lifecycle-step span { color: var(--muted); line-height: 1.55; }
+.requirement-summary .feature-card { min-height: 150px; }
+.requirements-layout { align-items: start; }
+.requirements-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(255px, 1fr));
+  gap: 14px;
+}
+.requirement-card {
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 16px;
+  background: #fff;
+  box-shadow: var(--shadow-soft);
+  cursor: pointer;
+  transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+}
+.requirement-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
+  border-color: #bfe8d6;
+}
+.req-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.req-id {
+  color: var(--green-dark);
+  background: #eef7f4;
+  border: 1px solid rgba(15, 164, 126, .2);
+  border-radius: 999px;
+  padding: 5px 10px;
+  font-weight: 800;
+  font-size: .82rem;
+}
+.requirement-card h3 { color: var(--navy); margin-bottom: 7px; }
+.requirement-card p { color: var(--muted); line-height: 1.6; font-size: .9rem; }
+.req-map {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 14px;
+}
+.req-map span {
+  border: 1px solid var(--border);
+  background: #f7fafd;
+  color: var(--navy);
+  border-radius: 999px;
+  padding: 5px 9px;
+  font-size: .78rem;
+  font-weight: 700;
+}
+.hierarchy-box {
+  display: grid;
+  gap: 10px;
+}
+.hierarchy-box div {
+  display: grid;
+  grid-template-columns: 95px 1fr;
+  gap: 12px;
+  align-items: center;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 12px 14px;
+  background: #fff;
+}
+.hierarchy-box strong { color: var(--navy); }
+.hierarchy-box span { color: var(--muted); line-height: 1.5; }
+.mock-hidden-by-standard-filter,
+.mock-hidden-by-requirement-filter { display: none !important; }
+
+@media (max-width: 760px) {
+  .page-actions { width: 100%; }
+  .page-actions .btn-outline { flex: 1; justify-content: center; }
+  .hierarchy-box div { grid-template-columns: 1fr; gap: 4px; }
+}
