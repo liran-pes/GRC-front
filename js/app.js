@@ -15,6 +15,9 @@
     'בקרות': 'controls',
     'ציות': 'compliance',
     'דוחות': 'reports',
+    'הודעות': 'messages',
+    'התראות': 'messages',
+    'אחרונות': 'messages',
     'ניהול': 'admin',
     'SLA': 'reports',
     'חריגות': 'reports',
@@ -148,6 +151,28 @@
 
       if (!target.closest('#mock-menu')) closeMenu();
 
+      var goScreen = target.closest('[data-go-screen]');
+      if (goScreen) {
+        event.preventDefault();
+        event.stopPropagation();
+        navigateTo(goScreen.dataset.goScreen || 'messages', 'נפתח דף ההודעות');
+        return;
+      }
+
+      var messageAction = target.closest('[data-message-action]');
+      if (messageAction) {
+        event.preventDefault();
+        event.stopPropagation();
+        handleMessageAction(messageAction.dataset.messageAction, messageAction);
+        return;
+      }
+
+      var messageItem = target.closest('.message-item');
+      if (messageItem && activeScreenId() === 'messages') {
+        openMessageDetail(messageItem);
+        return;
+      }
+
       var notificationButton = target.closest('.icon-btn');
       if (notificationButton) {
         openNotifications();
@@ -248,7 +273,7 @@
   }
 
   function enrichClickableElements() {
-    qsa('.kpi-card, .feature-card, .task-item, .gap-item, table.data tbody tr, .link-blue, .bar-col, .chart-legend span, .line-chart-svg').forEach(function (el) {
+    qsa('.kpi-card, .feature-card, .task-item, .gap-item, .message-item, .messages-teaser, table.data tbody tr, .link-blue, .bar-col, .chart-legend span, .line-chart-svg').forEach(function (el) {
       el.classList.add('mock-clickable');
       if (!el.hasAttribute('tabindex')) el.setAttribute('tabindex', '0');
     });
@@ -468,7 +493,7 @@
         '<li><strong>2 בקרות</strong><span>חסרות ראיות עדכניות</span></li>' +
         '<li><strong>חריגת SLA</strong><span>פרויקט BI ארגוני חרג ב־4 ימים</span></li>' +
       '</ul>', [
-        { label: 'פתיחת כל ההתראות', action: 'open-alerts', primary: true },
+        { label: 'פתח את כל ההתראות', action: 'open-alerts', primary: true },
         { label: 'סימון הכל כנקרא', action: 'mark-read' }
       ]);
   }
@@ -560,6 +585,53 @@
       ]);
   }
 
+  function handleMessageAction(action, button) {
+    if (action === 'mark-all-read') {
+      markAllMessagesRead();
+      return showToast('כל ההודעות סומנו כנקראו');
+    }
+    if (action === 'export-notifications') {
+      return downloadMockReport('ייצוא התראות והודעות');
+    }
+    if (action === 'open-projects') return navigateTo('projects', 'נפתחו פרויקטים שממתינים לאישור');
+    if (action === 'open-controls') return navigateTo('controls', 'נפתחו בקרות חסרות ראיות');
+    if (action === 'open-reports') return navigateTo('reports', 'נפתח דוח חריגות SLA');
+    if (action === 'open-compliance') return navigateTo('compliance', 'נפתח מסך ציות');
+    if (action === 'open-admin') return navigateTo('admin', 'נפתח מסך ניהול');
+    if (action === 'open-messages') return navigateTo('messages', 'נפתח דף ההודעות');
+    return showToast('פעולת הודעה בוצעה במוקאפ');
+  }
+
+  function openMessageDetail(item) {
+    var title = item.dataset.messageTitle || cleanText(qs('strong', item) || item) || 'הודעה';
+    var channel = cleanText(qs('.message-meta span', item) || '') || 'ערוץ: מערכת';
+    item.classList.remove('unread');
+    updateNotificationBadge();
+    openModal(title, '' +
+      '<p>פירוט הודעה מתוך מרכז ההודעות. במערכת אמיתית ההודעה תחובר לפרויקט, בקרה, סיכון או דוח לפי הרשאות המשתמש.</p>' +
+      '<div class="mock-summary-grid">' +
+        '<div><span>מקור</span><strong>' + escapeHtml(channel.replace('ערוץ:', '').trim() || 'מערכת') + '</strong></div>' +
+        '<div><span>עדיפות</span><strong>' + (item.classList.contains('priority-high') ? 'גבוהה' : 'רגילה') + '</strong></div>' +
+        '<div><span>סטטוס</span><strong>נקראה</strong></div>' +
+      '</div>' +
+      mockTimelineHtml(), [
+        { label: 'סמן כטופל', action: 'confirm-action', primary: true },
+        { label: 'הורדת פרטי הודעה', action: 'export-current' }
+      ]);
+  }
+
+  function markAllMessagesRead() {
+    qsa('.message-item.unread').forEach(function (item) { item.classList.remove('unread'); });
+    updateNotificationBadge(true);
+  }
+
+  function updateNotificationBadge(forceHide) {
+    var dot = qs('.icon-btn .badge-dot');
+    if (!dot) return;
+    var unread = qsa('#screen-messages .message-item.unread, #screen-home .messages-teaser .message-item.unread').length;
+    dot.style.display = (forceHide || unread === 0) ? 'none' : '';
+  }
+
   function handleModalAction(action, button) {
     if (action === 'close') return closeModal();
     if (action === 'save-user') return saveMockUser();
@@ -567,12 +639,11 @@
     if (action === 'export-current' || action === 'download-evidence') return downloadMockReport('ייצוא מוקאפ');
     if (action === 'filter-projects') return navigateTo('projects', 'נפתח סינון פרויקטים');
     if (action === 'filter-controls') return navigateTo('controls', 'נפתח סינון בקרות');
-    if (action === 'open-alerts') return navigateTo('home', 'נפתח מרכז ההתראות בדף הבית');
+    if (action === 'open-alerts') return navigateTo('messages', 'נפתח דף ההודעות וההתראות');
     if (action === 'admin-open') return navigateTo('admin', 'נפתח מסך ניהול');
     if (action === 'view-file') return showToast('קובץ מוקאפ נפתח לתצוגה');
     if (action === 'mark-read') {
-      var dot = qs('.icon-btn .badge-dot');
-      if (dot) dot.style.display = 'none';
+      markAllMessagesRead();
       return showToast('כל ההתראות סומנו כנקראו');
     }
     showToast(mockActionLabel(action, button) + ' — בוצע במוקאפ');
