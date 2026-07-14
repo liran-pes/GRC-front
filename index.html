@@ -82,6 +82,8 @@
     <li><button class="nav-item" data-screen="risks"><svg><use href="#i-alert"/></svg>סיכונים</button></li>
     <li><button class="nav-item" data-screen="controls"><svg><use href="#i-shield-check"/></svg>בקרות</button></li>
     <li><button class="nav-item" data-screen="compliance"><svg><use href="#i-file-check"/></svg>ציות</button></li>
+    <li><button class="nav-item" data-screen="standards"><svg><use href="#i-file-text"/></svg>תקנים</button></li>
+    <li><button class="nav-item" data-screen="requirements"><svg><use href="#i-file-plus"/></svg>כרטיסי דרישה</button></li>
     <li><button class="nav-item" data-screen="reports"><svg><use href="#i-chart"/></svg>דוחות</button></li>
     <li><button class="nav-item" data-screen="messages"><svg><use href="#i-bell"/></svg>הודעות</button></li>
     <li><button class="nav-item" data-screen="admin"><svg><use href="#i-gear"/></svg>ניהול<svg class="chev"><use href="#i-chev-down"/></svg></button></li>
@@ -672,6 +674,196 @@
   </div>
 </section>
 
+
+
+<!-- ================= תקנים ================= -->
+<section class="screen" id="screen-standards">
+  <div class="page-head">
+    <div class="page-title">
+      <h1>תקנים</h1>
+      <p>ניהול מאגר תקנים ארגוני: גרסאות, פרסום, עדכון טיוטות והעברה לסטטוס לא בתוקף.</p>
+    </div>
+    <div class="page-actions">
+      <button class="btn-outline" data-standard-action="add"><svg width="16" height="16"><use href="#i-plus"/></svg> תקן חדש</button>
+      <button class="btn-outline" data-standard-action="export"><svg width="16" height="16"><use href="#i-download"/></svg> ייצוא מאגר</button>
+    </div>
+  </div>
+
+  <div class="kpi-row">
+    <div class="kpi-card" data-standard-action="filter-published">
+      <div><div class="kpi-label">תקנים בתוקף</div><div class="kpi-value">8</div></div>
+      <div class="kpi-icon tint-green"><svg><use href="#i-shield-check"/></svg></div>
+    </div>
+    <div class="kpi-card" data-standard-action="filter-draft">
+      <div><div class="kpi-label">טיוטות לעדכון</div><div class="kpi-value">3</div></div>
+      <div class="kpi-icon tint-blue"><svg><use href="#i-file-plus"/></svg></div>
+    </div>
+    <div class="kpi-card" data-standard-action="filter-review">
+      <div><div class="kpi-label">ממתינים לפרסום</div><div class="kpi-value">2</div></div>
+      <div class="kpi-icon tint-orange"><svg><use href="#i-clock"/></svg></div>
+    </div>
+    <div class="kpi-card" data-standard-action="filter-retired">
+      <div><div class="kpi-label">לא בתוקף</div><div class="kpi-value">4</div></div>
+      <div class="kpi-icon ring-red"><svg><use href="#i-alert"/></svg></div>
+    </div>
+  </div>
+
+  <div class="two-col standards-layout">
+    <div class="panel">
+      <div class="panel-head">
+        <h2><svg><use href="#i-file-text"/></svg>מאגר תקנים</h2>
+        <span class="pill pill-green"><span class="dot"></span>דמו ניהולי</span>
+      </div>
+      <div class="table-wrap">
+        <table class="data standards-table" id="standards-table">
+          <thead><tr><th>שם התקן</th><th>גרסה</th><th>בעלים</th><th>סטטוס</th><th>עודכן</th><th>כרטיסי דרישה</th><th>פעולות</th></tr></thead>
+          <tbody>
+            <tr data-standard-state="published">
+              <td><span class="cell-title">תקן IT למערכות צה״ל 3.1 — AI Ready</span><span class="row-note">כולל פרקי שירותי מידע, סייבר, ניטור, בדיקתיות, ענן ו־AI</span></td>
+              <td>3.1</td><td>ר״ת ארכיטקטורה / מידע ו־AI</td><td><span class="status st-green standard-status"><span class="dot"></span>פורסם</span></td><td>12/06/2026</td><td>42</td>
+              <td><span class="action-icons standard-actions"><button title="צפייה" data-standard-action="view"><svg><use href="#i-eye"/></svg></button><button title="גרסה חדשה" data-standard-action="new-version"><svg><use href="#i-file-plus"/></svg></button><button title="העבר ללא בתוקף" data-standard-action="retire"><svg><use href="#i-alert"/></svg></button></span></td>
+            </tr>
+            <tr data-standard-state="draft">
+              <td><span class="cell-title">מדיניות ועדת שכבה סמנטית</span><span class="row-note">טיוטה פנימית להגדרת סמכות, רישוי וניהול חריגים</span></td>
+              <td>0.8</td><td>ענף מידע</td><td><span class="status st-blue standard-status"><span class="dot"></span>טיוטה</span></td><td>10/07/2026</td><td>16</td>
+              <td><span class="action-icons standard-actions"><button title="עדכון טיוטה" data-standard-action="edit-draft"><svg><use href="#i-file-text"/></svg></button><button title="פרסם" data-standard-action="publish"><svg><use href="#i-shield-check"/></svg></button><button title="העבר ללא בתוקף" data-standard-action="retire"><svg><use href="#i-alert"/></svg></button></span></td>
+            </tr>
+            <tr data-standard-state="review">
+              <td><span class="cell-title">תקן API ארגוני</span><span class="row-note">OpenAPI, AsyncAPI, הרשאות, בדיקות CI/CD ו־OWASP API</span></td>
+              <td>1.2</td><td>ארכיטקטורת שירותים</td><td><span class="status st-orange standard-status"><span class="dot"></span>ממתין לפרסום</span></td><td>08/07/2026</td><td>28</td>
+              <td><span class="action-icons standard-actions"><button title="צפייה" data-standard-action="view"><svg><use href="#i-eye"/></svg></button><button title="עדכון לפני פרסום" data-standard-action="edit-draft"><svg><use href="#i-file-text"/></svg></button><button title="פרסם" data-standard-action="publish"><svg><use href="#i-shield-check"/></svg></button><button title="העבר ללא בתוקף" data-standard-action="retire"><svg><use href="#i-alert"/></svg></button></span></td>
+            </tr>
+            <tr data-standard-state="retired">
+              <td><span class="cell-title">נוהל הרשאות Legacy</span><span class="row-note">הוחלף על ידי מודל הרשאות ומידור לפי פריט מידע</span></td>
+              <td>1.0</td><td>ציות</td><td><span class="status st-red standard-status"><span class="dot"></span>לא בתוקף</span></td><td>20/05/2026</td><td>9</td>
+              <td><span class="action-icons standard-actions"><button title="צפייה" data-standard-action="view"><svg><use href="#i-eye"/></svg></button><button title="שכפול כטיוטה" data-standard-action="clone"><svg><use href="#i-file-plus"/></svg></button></span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="pagination">
+        <span>מציג 4 מתוך 17 תקנים</span>
+        <div class="page-btns"><button class="page-btn active">1</button><button class="page-btn">2</button><button class="page-btn plain"><svg width="16" height="16"><use href="#i-chev-left"/></svg></button></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><h2><svg><use href="#i-flow"/></svg>מחזור חיי תקן</h2></div>
+      <div class="standard-lifecycle">
+        <div class="lifecycle-step"><strong>1. טיוטה</strong><span>עריכה חופשית, מיפוי סעיפים וכרטיסי דרישה.</span></div>
+        <div class="lifecycle-step"><strong>2. סקירה</strong><span>סוקרים מקצועיים, ארכיטקטורה, סייבר, מידע ובדיקות.</span></div>
+        <div class="lifecycle-step"><strong>3. פרסום</strong><span>הקפאת גרסה, חובת שימוש בפרויקטים חדשים.</span></div>
+        <div class="lifecycle-step"><strong>4. לא בתוקף</strong><span>שמירת עקיבות, חסימה משיוך חדש, צפייה בלבד.</span></div>
+      </div>
+      <div class="message-side-note">
+        <h3>פעולות דמו פעילות</h3>
+        <p>ניתן להוסיף תקן חדש, לפרסם טיוטה או תקן ממתין, לעדכן רק תקן שלא פורסם, ליצור גרסה חדשה ולהעביר תקן לסטטוס לא בתוקף.</p>
+      </div>
+      <button class="panel-link" data-standard-action="open-requirements">פתח כרטיסי דרישה של תקן IT <svg width="17" height="17"><use href="#i-arrow-left"/></svg></button>
+    </div>
+  </div>
+</section>
+
+<!-- ================= כרטיסי דרישה ================= -->
+<section class="screen" id="screen-requirements">
+  <div class="page-head">
+    <div class="page-title">
+      <h1>כרטיסי דרישה</h1>
+      <p>כרטיסי דרישה מתוך פרקי תקן IT 3.1, עם מיפוי לסעיפים נבחרים, בעלי אישור, ראיות ובדיקת עמידה.</p>
+    </div>
+    <div class="page-actions">
+      <button class="btn-outline" data-requirement-action="add"><svg width="16" height="16"><use href="#i-plus"/></svg> כרטיס דרישה חדש</button>
+      <button class="btn-outline" data-requirement-action="export"><svg width="16" height="16"><use href="#i-download"/></svg> ייצוא כרטיסים</button>
+    </div>
+  </div>
+
+  <div class="card-row requirement-summary">
+    <div class="feature-card" data-requirement-action="filter-ai">
+      <div class="feature-top"><div><h3>7.16 שילוב מודלי AI</h3><p>אישור ר״ת מידע ו־AI, ניטור, HITL, סימון תוצרי AI.</p></div><div class="feature-icon tint-purple"><svg><use href="#i-cpu"/></svg></div></div>
+    </div>
+    <div class="feature-card" data-requirement-action="filter-cyber">
+      <div class="feature-top"><div><h3>7.6 הגנה בסייבר</h3><p>הרשאות, מידור, בקרות גישה, לוגים וראיות.</p></div><div class="feature-icon tint-green"><svg><use href="#i-shield"/></svg></div></div>
+    </div>
+    <div class="feature-card" data-requirement-action="filter-test">
+      <div class="feature-top"><div><h3>7.12 בדיקתיות</h3><p>בדיקות רציפות, מדדי מעבר, סביבות ודיווח פערים.</p></div><div class="feature-icon tint-blue"><svg><use href="#i-file-check"/></svg></div></div>
+    </div>
+  </div>
+
+  <div class="two-col wide-start requirements-layout">
+    <div class="panel">
+      <div class="panel-head">
+        <h2><svg><use href="#i-file-plus"/></svg>כרטיסים לדוגמה — תקן IT 3.1</h2>
+        <span class="pill pill-green"><span class="dot"></span>מיפוי לפרקים 7.1–7.16</span>
+      </div>
+      <div class="requirements-grid" id="requirements-grid">
+        <article class="requirement-card priority-high" data-clause="7.16" data-owner="ר״ת מידע ו־AI" data-evidence="נוהל HITL, לוג מודל, תיעוד אישור ועדת מידע" data-requirement-title="AI-RQ-001 — אישור שילוב מודל AI">
+          <div class="req-head"><span class="req-id">AI-RQ-001</span><span class="status st-orange"><span class="dot"></span>חובת ועדה</span></div>
+          <h3>אישור שילוב מודל AI במערכת</h3>
+          <p>כל פרויקט שמשלב מודל AI נדרש לאישור ר״ת מידע ו־AI ולהצגת תפקיד המודל, גבולות סמכותו והאם קיימת בקרה אנושית.</p>
+          <div class="req-map"><span>תקן IT 3.1</span><span>פרק 7.16</span><span>סעיף נבחר: אישור מודל AI</span></div>
+        </article>
+        <article class="requirement-card" data-clause="7.16" data-owner="ארכיטקט AI" data-evidence="תווית Generated by AI, מסך UX, בדיקות קבלה" data-requirement-title="AI-RQ-002 — סימון תוצרי AI">
+          <div class="req-head"><span class="req-id">AI-RQ-002</span><span class="status st-blue"><span class="dot"></span>דרישת UX</span></div>
+          <h3>סימון תוצר שנוצר על ידי AI</h3>
+          <p>המערכת תציג למשתמש חיווי ברור כאשר מידע, המלצה או סיכום נוצרו על ידי מודל AI.</p>
+          <div class="req-map"><span>תקן IT 3.1</span><span>פרק 7.16</span><span>סעיף נבחר: Generated by AI</span></div>
+        </article>
+        <article class="requirement-card" data-clause="7.6" data-owner="מוביל סייבר" data-evidence="Matrix הרשאות, RBAC, לוג גישה אחרון" data-requirement-title="CY-RQ-014 — הרשאות ומידור">
+          <div class="req-head"><span class="req-id">CY-RQ-014</span><span class="status st-green"><span class="dot"></span>בקרה</span></div>
+          <h3>הרשאות ומידור לפי פריט מידע</h3>
+          <p>גישה למידע תנוהל לפי תפקיד, צורך מבצעי ופריט מידע, כולל עקיבות מי קיבל גישה ומי אישר.</p>
+          <div class="req-map"><span>תקן IT 3.1</span><span>פרק 7.6</span><span>סעיף נבחר: בקרות גישה ומידור</span></div>
+        </article>
+        <article class="requirement-card" data-clause="7.10" data-owner="SRE / תפעול" data-evidence="Dashboard ניטור, Alert rules, Runbook תגובה" data-requirement-title="OBS-RQ-021 — ניטור ובקרה">
+          <div class="req-head"><span class="req-id">OBS-RQ-021</span><span class="status st-blue"><span class="dot"></span>ניטור</span></div>
+          <h3>ניטור אנומליות וזמני תגובה</h3>
+          <p>המערכת תמדוד זמני תגובה, חריגות, Drift תפעולי והתראות, ותציג לוח תפעולי לבקרה רציפה.</p>
+          <div class="req-map"><span>תקן IT 3.1</span><span>פרק 7.10</span><span>סעיף נבחר: ניטור ובקרה</span></div>
+        </article>
+        <article class="requirement-card" data-clause="7.12" data-owner="מוביל בדיקות" data-evidence="Test Plan, DoD, תוצאות CI/CD" data-requirement-title="TEST-RQ-007 — בדיקתיות מתמשכת">
+          <div class="req-head"><span class="req-id">TEST-RQ-007</span><span class="status st-green"><span class="dot"></span>DoD</span></div>
+          <h3>בדיקתיות מתמשכת ושער מעבר</h3>
+          <p>לכל דרישה יוגדרו בדיקות, תנאי מעבר/כישלון, ראיות נדרשות ואחראי מקצועי לפני מעבר לשלב הבא.</p>
+          <div class="req-map"><span>תקן IT 3.1</span><span>פרק 7.12</span><span>סעיף נבחר: בדיקתיות</span></div>
+        </article>
+        <article class="requirement-card" data-clause="7.11" data-owner="בעל מוצר מידע" data-evidence="קטלוג מידע, Data contract, מדדי איכות" data-requirement-title="DATA-RQ-011 — תחקור ומיצוי מידע">
+          <div class="req-head"><span class="req-id">DATA-RQ-011</span><span class="status st-purple"><span class="dot"></span>מידע</span></div>
+          <h3>רישום מוצר מידע ו־Big Data</h3>
+          <p>מקור מידע המשמש לתחקור או מיצוי יירשם בקטלוג עם בעלים, איכות, הרשאות, SLA וממשקי גישה.</p>
+          <div class="req-map"><span>תקן IT 3.1</span><span>פרק 7.11</span><span>סעיף נבחר: תחקור ומיצוי מידע</span></div>
+        </article>
+        <article class="requirement-card" data-clause="7.15" data-owner="ארכיטקט ענן" data-evidence="תיק ענן, Boundary, רשימת שירותים מאושרת" data-requirement-title="CLOUD-RQ-004 — שימוש בענן ציבורי">
+          <div class="req-head"><span class="req-id">CLOUD-RQ-004</span><span class="status st-orange"><span class="dot"></span>אישור חריג</span></div>
+          <h3>שימוש בענן ציבורי / נימבוס</h3>
+          <p>שימוש בענן ציבורי יוגדר כתלות ארכיטקטונית, עם גבולות מידע, הרשאות, שירותים מאושרים ותוכנית יציאה.</p>
+          <div class="req-map"><span>תקן IT 3.1</span><span>פרק 7.15</span><span>סעיף נבחר: ענן ציבורי</span></div>
+        </article>
+        <article class="requirement-card" data-clause="7.1" data-owner="בעל שירות מידע" data-evidence="OpenAPI, SLA, מסמך בעלות שירות" data-requirement-title="INFO-RQ-003 — שירותי מידע">
+          <div class="req-head"><span class="req-id">INFO-RQ-003</span><span class="status st-blue"><span class="dot"></span>שירות</span></div>
+          <h3>הגדרת שירות מידע פתוח ומנוהל</h3>
+          <p>שירות מידע יוגדר עם בעלים, חוזה שירות, ממשק, הרשאות, תיעוד, SLA ויכולת מעקב אחר צריכה.</p>
+          <div class="req-map"><span>תקן IT 3.1</span><span>פרק 7.1</span><span>סעיף נבחר: שירותי מידע</span></div>
+        </article>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><h2><svg><use href="#i-flow"/></svg>מיפוי היררכי</h2></div>
+      <div class="hierarchy-box">
+        <div><strong>תקן</strong><span>תקן IT למערכות צה״ל 3.1</span></div>
+        <div><strong>גרסה</strong><span>3.1 — AI Ready</span></div>
+        <div><strong>פרק</strong><span>7 — דרישות מן המערכות</span></div>
+        <div><strong>תת־פרק</strong><span>7.1 עד 7.16</span></div>
+        <div><strong>כרטיס דרישה</strong><span>בדיקה, ראיה, אחראי, החלטת ועדה</span></div>
+      </div>
+      <div class="message-side-note">
+        <h3>פרקי תקן IT בדוגמאות</h3>
+        <p>הכרטיסים ממופים לפרקי שירותי מידע, הגנה בסייבר, ניטור ובקרה, תחקור ומיצוי מידע, בדיקתיות, ענן ציבורי ושילוב מודלי AI.</p>
+      </div>
+      <button class="panel-link" data-requirement-action="traceability">הצג עקיבות דרישה ← פרויקט ← ראיה <svg width="17" height="17"><use href="#i-arrow-left"/></svg></button>
+    </div>
+  </div>
+</section>
 
 <!-- ================= הודעות ================= -->
 <section class="screen" id="screen-messages">
