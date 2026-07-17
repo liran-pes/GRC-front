@@ -1,0 +1,43 @@
+{
+  "folders": [
+    {
+      "name": "GRC FRONT",
+      "path": "."
+    },
+    {
+      "name": "GRC BACKEND",
+      "path": "../GRC-BACKEND"
+    }
+  ],
+  "tasks": {
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "GRC: Frontend",
+        "type": "shell",
+        "command": "npm.cmd run dev",
+        "options": {
+          "cwd": "${workspaceFolder:GRC FRONT}"
+        },
+        "isBackground": true,
+        "problemMatcher": []
+      },
+      {
+        "label": "GRC: Backend",
+        "type": "shell",
+        "command": ".\\.venv\\Scripts\\python.exe -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8000",
+        "options": {
+          "cwd": "${workspaceFolder:GRC BACKEND}"
+        },
+        "isBackground": true,
+        "problemMatcher": []
+      },
+      {
+        "label": "GRC: Full Stack",
+        "dependsOn": ["GRC: Backend", "GRC: Frontend"],
+        "dependsOrder": "parallel",
+        "problemMatcher": []
+      }
+    ]
+  }
+}

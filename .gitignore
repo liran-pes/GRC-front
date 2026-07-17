@@ -1,3 +1,7 @@
 WhatsApp Image*.jpeg
 Thumbs.db
 .DS_Store
+node_modules/
+dist/
+.vite/
+.server.pid

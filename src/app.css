@@ -1,0 +1,122 @@
+.grc-app {
+  min-height: 100vh;
+}
+
+.api-state {
+  min-height: 100vh;
+  display: grid;
+  place-content: center;
+  gap: 12px;
+  padding: 32px;
+  text-align: center;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.api-state h1 {
+  color: var(--navy);
+  font-size: 1.7rem;
+}
+
+.api-state code {
+  direction: ltr;
+  color: var(--red);
+}
+
+.grc-app .mock-hidden-by-message-filter {
+  display: none !important;
+}
+
+.grc-dialog-overlay {
+  background: rgba(20, 41, 77, 0.48);
+  backdrop-filter: blur(2px);
+}
+
+.grc-dialog-content {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 9991;
+  display: block;
+  width: min(760px, calc(100vw - 48px));
+  max-width: none;
+  max-height: calc(100dvh - 32px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 0;
+  gap: 0;
+  transform: translate(-50%, -50%) !important;
+}
+
+.grc-dialog-content .mock-modal-head {
+  padding-left: 72px;
+}
+
+.grc-dialog-content .mock-x {
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  padding: 0;
+}
+
+.grc-dialog-content .mock-x:hover {
+  color: var(--green-dark);
+  background: #f7fafd;
+}
+
+.grc-dialog-content .mock-x span[aria-hidden="true"] {
+  transform: translateY(-1px);
+}
+
+.mock-dialog-form {
+  margin-top: 18px;
+}
+
+.mock-dialog-description {
+  color: var(--text);
+  font-size: 1rem;
+  line-height: 1.75;
+}
+
+.mock-dialog-form input {
+  height: auto;
+  box-shadow: none;
+}
+
+.grc-dialog-content .mock-action {
+  width: auto;
+  height: auto;
+  box-shadow: none;
+}
+
+.grc-dialog-content .mock-action:hover {
+  background: #f6f9fc;
+}
+
+.grc-dialog-content .mock-action.primary:hover {
+  background: var(--green-dark);
+  border-color: var(--green-dark);
+}
+
+[role="dialog"],
+[role="menu"] {
+  font-family: "Heebo", "Segoe UI", Arial, sans-serif;
+}
+
+@media (max-width: 620px) {
+  .grc-dialog-content {
+    width: calc(100vw - 24px);
+    max-height: calc(100dvh - 24px);
+  }
+
+  .grc-dialog-content .mock-modal-head,
+  .grc-dialog-content .mock-modal-body {
+    padding-right: 20px;
+    padding-left: 54px;
+  }
+
+  .grc-dialog-content .mock-modal-actions {
+    padding-right: 20px;
+    padding-left: 20px;
+  }
+}
